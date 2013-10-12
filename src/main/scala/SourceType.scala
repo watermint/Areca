@@ -1,5 +1,10 @@
-import squirrel.Account
 
 trait SourceType
 
-case class SourceTypeEmoney(account: Account) extends SourceType
+case class SourceTypeEmoney() extends SourceType
+
+object SourceType {
+  lazy val sourceTypes = Map(
+    "emoney" -> SourceTypeEmoney()
+  )
+}

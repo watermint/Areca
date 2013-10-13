@@ -1,18 +1,21 @@
 package areca
 
-import rules.{StarbucksSquirrel, SaisonSquirrel, EmoneySquirrel}
-
 object Main {
   def main(args: Array[String]): Unit = {
     Operation.argParser.parse(args, Operation()) map {
       op =>
         val rule: Option[Rule] = (op.sourceType, op.destType) match {
-          case (Some(st: SourceTypeEmoney), Some(dt: DestTypeSquirrel)) => Some(EmoneySquirrel())
-          case (Some(st: SourceTypeSaison), Some(dt: DestTypeSquirrel)) => Some(SaisonSquirrel())
-          case (Some(st: SourceTypeStarbucks), Some(dt: DestTypeSquirrel)) => Some(StarbucksSquirrel())
+          case (Some(sourceType), Some(destType)) =>
+            Mappings.mappings.get(sourceType) match {
+              case Some(m) => m.rule(destType)
+              case _ => None
+            }
           case _ => None
         }
-        rule.foreach(_.convert(op.sourcePath.get, op.destPath.get))
+        rule match {
+          case Some(r) => r.convert(op.sourcePath.get, op.destPath.get)
+          case _ => println("Unsupported source/target mapping")
+        }
     }
   }
 }

@@ -1,4 +1,4 @@
-package rules
+package starbucks
 
 import areca.Rule
 import squirrel.{Record => SquirrelRecord, Category}
@@ -6,7 +6,7 @@ import starbucks.{Record => StarbucksRecord}
 
 import java.nio.file.Path
 
-case class StarbucksSquirrel() extends Rule {
+object StarbucksSquirrel extends Rule {
   def convert(inputPath: Path, outputPath: String): Unit = {
     SquirrelRecord.export(
       output = outputPath,

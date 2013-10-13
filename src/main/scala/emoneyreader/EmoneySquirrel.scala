@@ -1,15 +1,11 @@
-package rules
+package emoneyreader
 
-import squirrel.{Record => SquirrelRecord, Category}
-import emoneyreader.{Record => EmoneyRecord, _}
-import emoneyreader.CategoryTypePayment
-import emoneyreader.CategoryTypeOther
-import emoneyreader.CategoryTypeAdjustment
-import emoneyreader.CategoryTypeBus
+import squirrel.{Record => SquirrelRecord, Category => SquirrelCategory}
+import emoneyreader.{Record => EmoneyRecord}
 import java.nio.file.Path
 import areca.Rule
 
-case class EmoneySquirrel() extends Rule {
+object EmoneySquirrel extends Rule {
   def convert(inputPath: Path, outputPath: String) = {
     SquirrelRecord.export(outputPath, fromFile(inputPath))
   }
@@ -35,14 +31,14 @@ case class EmoneySquirrel() extends Rule {
     fromEmoneyRecords(EmoneyRecord.fromFile(emoneyPath))
   }
 
-  def category(emoney: EmoneyRecord): Option[Category] = {
+  def category(emoney: EmoneyRecord): Option[SquirrelCategory] = {
     emoney.category.categoryType match {
-      case c: CategoryTypeAdjustment => Some(Category.adjustment)
-      case c: CategoryTypeBus => Some(Category.transport)
-      case c: CategoryTypeOther => Some(Category.adjustment)
-      case c: CategoryTypePayment => Some(Category.food)
-      case c: CategoryTypeTrain => Some(Category.transport)
-      case c: CategoryTypeVendingMachine => Some(Category.food)
+      case c: CategoryTypeAdjustment => Some(SquirrelCategory.adjustment)
+      case c: CategoryTypeBus => Some(SquirrelCategory.transport)
+      case c: CategoryTypeOther => Some(SquirrelCategory.adjustment)
+      case c: CategoryTypePayment => Some(SquirrelCategory.food)
+      case c: CategoryTypeTrain => Some(SquirrelCategory.transport)
+      case c: CategoryTypeVendingMachine => Some(SquirrelCategory.food)
       case _ => None
     }
   }

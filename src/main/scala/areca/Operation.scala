@@ -2,15 +2,19 @@ package areca
 
 import java.nio.file.{Files, FileSystems, Path}
 
-case class Operation(sourceType: Option[SourceType] = None,
+case class Operation(sourceType: Option[String] = None,
                      sourcePath: Option[Path] = None,
-                     destType: Option[DestType] = None,
+                     destType: Option[String] = None,
                      destPath: Option[String] = None)
 
 object Operation {
-  lazy val textSupportedSourceTypes = SourceType.sourceTypes.keys.mkString(", ")
+  lazy val sourceTypes: List[String] = Mappings.mappings.keys.toList
+ 
+  lazy val destTypes: List[String] = Mappings.mappings.values.flatMap(_.keys).toList.distinct
+  
+  lazy val textSourceTypes = sourceTypes.mkString(", ")
 
-  lazy val textSupportedDestTypes = DestType.destTypes.keys.mkString(", ")
+  lazy val textDestTypes = destTypes.mkString(", ")
 
   val argParser = new scopt.OptionParser[Operation]("areca") {
     head("areca", "1.0")
@@ -20,18 +24,18 @@ object Operation {
     //
     opt[String]('s', "source") action {
       case (typeName, o) =>
-        SourceType.sourceTypes.get(typeName) match {
-          case Some(t) => o.copy(sourceType = Some(t))
-          case None => o
+        sourceTypes.contains(typeName) match {
+          case true => o.copy(sourceType = Some(typeName))
+          case _ => o
         }
     } validate {
       typeName =>
-        SourceType.sourceTypes.get(typeName) match {
-          case Some(t) => success
-          case _ => failure("unknown type. supported types are follows: " + textSupportedSourceTypes)
+        sourceTypes.contains(typeName) match {
+          case true => success
+          case _ => failure("unknown type. supported types are follows: " + textSourceTypes)
         }
     } text {
-      "source file type: " + textSupportedSourceTypes
+      "source file type: " + textSourceTypes
     } required()
 
     //
@@ -59,18 +63,18 @@ object Operation {
     //
     opt[String]('d', "dest") action {
       case (dest, o) =>
-        DestType.destTypes.get(dest) match {
-          case Some(d) => o.copy(destType = Some(d))
+        destTypes.contains(dest) match {
+          case true => o.copy(destType = Some(dest))
           case _ => o
         }
     } validate {
       dest =>
-        DestType.destTypes.get(dest) match {
-          case Some(d) => success
-          case _ => failure("unknown dest type: " + dest + ", supported types are: " + textSupportedDestTypes)
+        destTypes.contains(dest) match {
+          case true => success
+          case _ => failure("unknown dest type: " + dest + ", supported types are: " + textDestTypes)
         }
     } text {
-      "destination type: " + textSupportedDestTypes
+      "destination type: " + textDestTypes
     } required()
 
     //

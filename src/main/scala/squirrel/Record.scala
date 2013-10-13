@@ -2,6 +2,8 @@ package squirrel
 
 import java.time.{ZoneId, Instant}
 import org.watermint.timesugar.TimeSugar
+import scalax.io.{Codec, Resource}
+import java.io.File
 
 case class Record(date: Instant,
                   description: String,
@@ -17,4 +19,12 @@ case class Record(date: Instant,
     "," + value +
     "," + note +
     "," + category.name
+}
+
+object Record {
+  def export(output: String, records: Seq[Record]) = {
+    Resource.fromFile(new File(output)).write(
+      records.map(_.line).mkString("\n")
+    )(Codec.UTF8)
+  }
 }

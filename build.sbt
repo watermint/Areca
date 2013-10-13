@@ -12,5 +12,6 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
   "com.github.scala-incubator.io" % "scala-io-file_2.10" % "0.4.2",
   "com.github.scopt" %% "scopt" % "3.1.0",
+  "nu.validator.htmlparser" % "htmlparser" % "1.4",
   "org.watermint" % "time-sugar" % "r2"
 )

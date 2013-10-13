@@ -1,5 +1,5 @@
 import java.nio.file.{Path, Files, FileSystems}
-import rules.EmoneySquirrel
+import rules.{Rule, SaisonSquirrel, EmoneySquirrel}
 
 object Main {
   lazy val textSupportedSourceTypes = SourceType.sourceTypes.keys.mkString(", ")
@@ -78,22 +78,15 @@ object Main {
     } required()
   }
 
-  def emoneyToSquirrel(sourcePath: Path, destPath: String) {
-    EmoneySquirrel.export(
-      output = destPath,
-      records = EmoneySquirrel.fromFile(sourcePath)
-    )
-  }
-
   def main(args: Array[String]): Unit = {
     argParser.parse(args, Operation()) map {
       op =>
-        (op.sourceType, op.destType) match {
-          case (Some(st: SourceTypeEmoney), Some(dt: DestTypeSquirrel)) =>
-            emoneyToSquirrel(op.sourcePath.get, op.destPath.get)
-          case _ =>
+        val rule: Option[Rule] = (op.sourceType, op.destType) match {
+          case (Some(st: SourceTypeEmoney), Some(dt: DestTypeSquirrel)) => Some(EmoneySquirrel())
+          case (Some(st: SourceTypeSaison), Some(dt: DestTypeSquirrel)) => Some(SaisonSquirrel())
+          case _ => None
         }
-    } getOrElse {
+        rule.foreach(_.convert(op.sourcePath.get, op.destPath.get))
     }
   }
 }

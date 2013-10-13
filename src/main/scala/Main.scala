@@ -1,10 +1,8 @@
-import java.nio.file.{Files, FileSystems}
-import squirrel.Account
+import java.nio.file.{Path, Files, FileSystems}
+import rules.EmoneySquirrel
 
 object Main {
   lazy val textSupportedSourceTypes = SourceType.sourceTypes.keys.mkString(", ")
-
-  lazy val textSupportedAccountNames = Account.accounts.keys.mkString(", ")
 
   lazy val textSupportedDestTypes = DestType.destTypes.keys.mkString(", ")
 
@@ -51,25 +49,6 @@ object Main {
     } required()
 
     //
-    // Dest Account
-    //
-    opt[String]('a', "account") action {
-      case (account, o) =>
-        Account.accounts.get(account) match {
-          case a: Some[Account] => o.copy(destAccount = a)
-          case _ => o
-        }
-    } validate {
-      account =>
-        Account.accounts.get(account) match {
-          case Some(a) => success
-          case _ => failure("unknown account: " + account + ", supported accounts are: " + textSupportedAccountNames)
-        }
-    } text {
-      "target account: " + textSupportedAccountNames
-    } required()
-
-    //
     // Dest Type
     //
     opt[String]('d', "dest") action {
@@ -99,12 +78,22 @@ object Main {
     } required()
   }
 
+  def emoneyToSquirrel(sourcePath: Path, destPath: String) {
+    EmoneySquirrel.export(
+      output = destPath,
+      records = EmoneySquirrel.fromFile(sourcePath)
+    )
+  }
+
   def main(args: Array[String]): Unit = {
     argParser.parse(args, Operation()) map {
       op =>
-        println(op)
+        (op.sourceType, op.destType) match {
+          case (Some(st: SourceTypeEmoney), Some(dt: DestTypeSquirrel)) =>
+            emoneyToSquirrel(op.sourcePath.get, op.destPath.get)
+          case _ =>
+        }
     } getOrElse {
-      argParser.usage
     }
   }
 }

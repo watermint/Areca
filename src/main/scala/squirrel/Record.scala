@@ -5,6 +5,15 @@ import org.watermint.timesugar.TimeSugar
 import scalax.io.{Codec, Resource}
 import java.io.File
 
+/**
+ * Squirrelへのインポート用.
+ *
+ * @param date 日付
+ * @param description 明細
+ * @param category カテゴリ
+ * @param value 金額
+ * @param note メモ
+ */
 case class Record(date: Instant,
                   description: String,
                   category: Category,

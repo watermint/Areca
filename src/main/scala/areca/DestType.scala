@@ -1,3 +1,5 @@
+package areca
+
 
 trait DestType
 

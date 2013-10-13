@@ -6,6 +6,18 @@ import java.nio.file.Path
 import scala.io.Source
 import scala.xml.{Node, Text}
 
+/**
+ * Netアンサー「最近のカードご利用一覧」ページのHTMLからスクレイピング.
+ *
+ * @param date ご利用日
+ * @param description ご利用店名及び商品名
+ * @param family 家族
+ * @param paymentCategory 支払区分 (e.g. 1回)
+ * @param revolving リボ変更
+ * @param amount ご利用金額
+ * @param payMonth お支払月
+ * @param note 備考
+ */
 case class Record(date: Instant,
                   description: String,
                   family: String,

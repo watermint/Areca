@@ -1,4 +1,4 @@
-package rules
+package areca
 
 import java.nio.file.Path
 

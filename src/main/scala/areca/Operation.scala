@@ -1,7 +1,13 @@
-import java.nio.file.{Path, Files, FileSystems}
-import rules.{Rule, SaisonSquirrel, EmoneySquirrel}
+package areca
 
-object Main {
+import java.nio.file.{Files, FileSystems, Path}
+
+case class Operation(sourceType: Option[SourceType] = None,
+                     sourcePath: Option[Path] = None,
+                     destType: Option[DestType] = None,
+                     destPath: Option[String] = None)
+
+object Operation {
   lazy val textSupportedSourceTypes = SourceType.sourceTypes.keys.mkString(", ")
 
   lazy val textSupportedDestTypes = DestType.destTypes.keys.mkString(", ")
@@ -76,17 +82,5 @@ object Main {
     } text {
       "output file name"
     } required()
-  }
-
-  def main(args: Array[String]): Unit = {
-    argParser.parse(args, Operation()) map {
-      op =>
-        val rule: Option[Rule] = (op.sourceType, op.destType) match {
-          case (Some(st: SourceTypeEmoney), Some(dt: DestTypeSquirrel)) => Some(EmoneySquirrel())
-          case (Some(st: SourceTypeSaison), Some(dt: DestTypeSquirrel)) => Some(SaisonSquirrel())
-          case _ => None
-        }
-        rule.foreach(_.convert(op.sourcePath.get, op.destPath.get))
-    }
   }
 }

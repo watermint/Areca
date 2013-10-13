@@ -1,9 +1,12 @@
 package squirrel
 
-case class Category(name: String) {
+case class Category(name: String)
 
-}
-
+/**
+ * Squirrelに定義しておいたカテゴリ.
+ * ここは設定的にかえられるようにしたいが、Rule側でもマッピングをするため
+ * ある程度固定的に設定しておくことにする.
+ */
 object Category {
   val food = Category("01 食費")
   val transport = Category("02 交通費")

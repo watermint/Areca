@@ -7,6 +7,7 @@ import emoneyreader.CategoryTypeOther
 import emoneyreader.CategoryTypeAdjustment
 import emoneyreader.CategoryTypeBus
 import java.nio.file.Path
+import areca.Rule
 
 case class EmoneySquirrel() extends Rule {
   def convert(inputPath: Path, outputPath: String) = {

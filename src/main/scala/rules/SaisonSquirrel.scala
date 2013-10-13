@@ -4,6 +4,7 @@ import squirrel.{Record => SquirrelRecord, Category}
 import saison.{Record => SaisonRecord}
 
 import java.nio.file.Path
+import areca.Rule
 
 case class SaisonSquirrel() extends Rule {
   def convert(inputPath: Path, outputPath: String): Unit = {

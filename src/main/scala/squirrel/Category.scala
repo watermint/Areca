@@ -20,6 +20,6 @@ object Category {
   val salary = Category("10 給与・賞与")
   val tax = Category("11 税金")
   val investment = Category("12 投資")
-  val adjustment = Category("13 調整")
+  val adjustment = Category("13 調整・資金移動")
   val unsorted = Category("14 未分類")
 }

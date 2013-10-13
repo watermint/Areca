@@ -6,6 +6,18 @@ import scala.io.{Codec, Source}
 import org.watermint.timesugar.TimeSugar
 import util.Parser
 
+/**
+ * CSV Record format for Android EMoneyReader.
+ *
+ * @see https://play.google.com/store/apps/details?id=com.kaemashita.android.emoneyreader
+ *
+ * @param number no
+ * @param date date
+ * @param category type
+ * @param note description
+ * @param value value
+ * @param balance balance
+ */
 case class Record(number: Long,
                   date: Instant,
                   category: Category,

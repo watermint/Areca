@@ -7,13 +7,15 @@ import scala.xml.parsing.NoBindingFactoryAdapter
 import nu.validator.htmlparser.sax.HtmlParser
 import nu.validator.htmlparser.common.XmlViolationPolicy
 import java.io.StringReader
+import java.nio.file.Path
+import scala.io.Source
 
 case class Parser(timeZone: ZoneId = ZoneId.of("Asia/Tokyo")) {
 
   def number(text: String): Option[Int] = {
-    text match {
+    text.replace(",", "").trim match {
       case n if n.matches("[+-]?\\d+") =>
-        Some(Integer.parseInt(text))
+        Some(Integer.parseInt(n))
       case _ => None
     }
   }
@@ -24,6 +26,10 @@ case class Parser(timeZone: ZoneId = ZoneId.of("Asia/Tokyo")) {
       case true => Some(d.get())
       case _ => None
     }
+  }
+
+  def html(path: Path, encoding: String): Option[Node] = {
+    html(Source.fromFile(path.toFile, encoding).getLines().mkString)
   }
 
   def html(text: String): Option[Node] = {

@@ -5,6 +5,7 @@ import util.Parser
 import java.nio.file.Path
 import scala.io.Source
 import scala.xml.{Node, Text}
+import scala.xml
 
 /**
  * Netアンサー「最近のカードご利用一覧」ページのHTMLからスクレイピング.
@@ -25,15 +26,13 @@ case class Record(date: Instant,
                   revolving: String,
                   amount: Int,
                   payMonth: String,
-                  note: String) {
-
-}
+                  note: String)
 
 object Record {
   val parser = Parser(ZoneId.of("Asia/Tokyo"))
 
   def fromAmount(text: String): Option[Int] = {
-    parser.number(text.replace("円", "").replace(",", ""))
+    parser.number(text.replace("円", ""))
   }
 
   def fromRow(row: Node): Option[Record] = {
@@ -58,10 +57,11 @@ object Record {
   }
 
   def fromFile(path: Path): Seq[Record] = {
-    val html = Source.fromFile(path.toFile, "MS932").getLines().mkString
-    val xml = parser.html(html).get
-
-    // XPath: //*[@id="main-box"]/table/tbody/tr
-    ((xml \\ "div" filter (_ \ "@id" contains Text("main-box"))) \ "table" \\ "tr").flatMap(tr => fromRow(tr))
+    parser.html(path, "MS932") match {
+      case Some(xml) =>
+        // XPath: //*[@id="main-box"]/table/tbody/tr
+        ((xml \\ "div" filter (_ \ "@id" contains Text("main-box"))) \ "table" \\ "tr").flatMap(tr => fromRow(tr))
+      case _ => Seq()
+    }
   }
 }

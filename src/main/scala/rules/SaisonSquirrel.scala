@@ -9,8 +9,8 @@ import areca.Rule
 case class SaisonSquirrel() extends Rule {
   def convert(inputPath: Path, outputPath: String): Unit = {
     SquirrelRecord.export(
-      outputPath,
-      SaisonRecord.fromFile(inputPath).flatMap {
+      output = outputPath,
+      records = SaisonRecord.fromFile(inputPath).flatMap {
         saison =>
           fromSaison(saison)
       }

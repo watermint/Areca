@@ -3,7 +3,6 @@ package emoneyreader
 import java.time.{ZoneId, Instant}
 import java.nio.file.Path
 import scala.io.{Codec, Source}
-import org.watermint.timesugar.TimeSugar
 import util.Parser
 
 /**

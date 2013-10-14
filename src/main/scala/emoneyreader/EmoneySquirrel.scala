@@ -39,7 +39,7 @@ object EmoneySquirrel extends Rule {
       case c: CategoryTypePayment => Some(SquirrelCategory.food)
       case c: CategoryTypeTrain => Some(SquirrelCategory.transport)
       case c: CategoryTypeVendingMachine => Some(SquirrelCategory.food)
-      case _ => None
+      case _ => Some(SquirrelCategory.unsorted)
     }
   }
 
